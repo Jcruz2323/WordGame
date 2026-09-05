@@ -8,14 +8,14 @@ public class GamePlay {
         Scanner scnr = new Scanner(System.in);
 
         System.out.println("Enter your first name:");
-        String firstName = scnr.next();
+        String firstName = scnr.nextLine();
 
         System.out.println("Would you like to enter a last name? Yes or no");
-        String answer = scnr.next();
+        String answer = scnr.nextLine();
 
         if (answer.equalsIgnoreCase("Yes")) {
             System.out.println("Please enter your last name");
-            String lastName = scnr.next();
+            String lastName = scnr.nextLine();
 
             player = new Person(firstName, lastName);
         } else {
