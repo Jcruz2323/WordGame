@@ -2,35 +2,30 @@ import java.util.Scanner;
 
 public class GamePlay {
 
-    private static Person player;
-
     public static void main(String[] args) {
-        Scanner scnr = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter a host name:");
+        String hostName = scanner.nextLine();
+        Hosts host = new Hosts(hostName);
 
-        System.out.println("Enter your first name:");
-        String firstName = scnr.nextLine();
 
-        System.out.println("Would you like to enter a last name? Yes or no");
-        String answer = scnr.nextLine();
+        System.out.println("Enter player name:");
+        String playerName = scanner.nextLine();
+        Players player = new Players(playerName);
 
-        if (answer.equalsIgnoreCase("Yes")) {
-            System.out.println("Please enter your last name");
-            String lastName = scnr.nextLine();
+        Turn turn = new Turn();
+        String playAgain = "yes";
 
-            player = new Person(firstName, lastName);
-        } else {
-            player = new Person(firstName);
+        while (playAgain.equalsIgnoreCase("yes")){
+            host.randomizeNum();
+
+            boolean correct = false;
+            while(!correct){
+                correct = turn.takeTurn(player, host);
+            }
+            System.out.println("Do you want to keep playing? (yes/no):");
+            playAgain = scanner.nextLine();
         }
-
-        Numbers numbers = new Numbers();
-        numbers.generateNumber();
-
-        int guess;
-        do {
-            System.out.println(player + " enter a guess:");
-            guess = scnr.nextInt();
-        } while (numbers.compareNumber(guess) == false);
+        System.out.println("Thanks for playing!");
     }
 }
-
-
