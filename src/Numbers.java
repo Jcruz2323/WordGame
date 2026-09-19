@@ -12,7 +12,7 @@ public class Numbers {
         this.randomNum = randomNum;
     }
 
-    public void generateNumber (){
+    public void generateNumber(){
         Random num = new Random();
         randomNum = num.nextInt(101);
     }

@@ -1,8 +1,8 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class Turn {
-    private static final int winningAmount = 1000;
-    private static final int losingAmount = 100;
+
     private Scanner scnr = new Scanner(System.in);
 
     public boolean takeTurn(Players player, Hosts host) {
@@ -11,16 +11,22 @@ public class Turn {
         System.out.println(host.getFirstName() + ": " + player.getFirstName() + ", please enter your guess between 0 to 100 ");
 
         int guess = scnr.nextInt();
-
-        if (numbers.compareNumber(guess)) {
-            player.setCurrentAmountofMoney(player.getCurrentAmountofMoney() + winningAmount);
-            System.out.println("congratulations! " + player.getFirstName() + " you are the winner!");
-            System.out.println(player);
-            return true;
+        boolean won = numbers.compareNumber(guess);
+        Random rand = new Random();
+        boolean moneyPrize = rand.nextBoolean();
+        int amountChange = 0;
+        if (moneyPrize) {
+            Money money = new Money();
+            amountChange = money.displayWinnings(player, won);
         } else {
-            player.setCurrentAmountofMoney(player.getCurrentAmountofMoney() - losingAmount);
-            System.out.println(player);
-            return false;
+            Physical physical = new Physical();
+            amountChange = physical.displayWinnings(player, won);
         }
+        player.setCurrentAmountofMoney(player.getCurrentAmountofMoney() + amountChange);
+        if (won) {
+            System.out.println("Congratulations! " + player.getFirstName() + ", you are the winner!");
+        }
+        System.out.println(player);
+        return won;
     }
 }

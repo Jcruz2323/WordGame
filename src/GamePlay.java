@@ -9,19 +9,24 @@ public class GamePlay {
         Hosts host = new Hosts(hostName);
 
 
-        System.out.println("Enter player name:");
-        String playerName = scanner.nextLine();
-        Players player = new Players(playerName);
+        Players[] currentPlayers = new Players[3];
 
+
+        for (int i = 0; i <3; i = i + 1){
+            System.out.println("Please enter player " + (i+1) + ":");
+            String playerName = scanner.nextLine();
+            currentPlayers[i] = new Players(playerName);
+        }
         Turn turn = new Turn();
         String playAgain = "yes";
 
         while (playAgain.equalsIgnoreCase("yes")){
             host.randomizeNum();
-
+            int playerIndex = 0;
             boolean correct = false;
             while(!correct){
-                correct = turn.takeTurn(player, host);
+                correct = turn.takeTurn(currentPlayers[playerIndex], host);
+                playerIndex = (playerIndex + 1) % currentPlayers.length;
             }
             System.out.println("Do you want to keep playing? (yes/no):");
             playAgain = scanner.nextLine();
