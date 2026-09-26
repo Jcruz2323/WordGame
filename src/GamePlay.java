@@ -13,7 +13,7 @@ public class GamePlay {
 
 
         for (int i = 0; i <3; i = i + 1){
-            System.out.println("Please enter player " + (i+1) + ":");
+            System.out.println("Player " + (i+1) + ": Please enter your name.");
             String playerName = scanner.nextLine();
             currentPlayers[i] = new Players(playerName);
         }
@@ -21,7 +21,7 @@ public class GamePlay {
         String playAgain = "yes";
 
         while (playAgain.equalsIgnoreCase("yes")){
-            host.randomizeNum();
+
             int playerIndex = 0;
             boolean correct = false;
             while(!correct){
@@ -30,6 +30,8 @@ public class GamePlay {
             }
             System.out.println("Do you want to keep playing? (yes/no):");
             playAgain = scanner.nextLine();
+
+
         }
         System.out.println("Thanks for playing!");
     }
