@@ -33,7 +33,7 @@ public class Turn {
             amountChange = physical.displayWinnings(player, won);
         }
 
-        player.setCurrentAmountofMoney(player.getCurrentAmountofMoney() + amountChange);
+        player.setCurrentAmountOfMoney(player.getCurrentAmountOfMoney() + amountChange);
 
         if (won) {
             System.out.println("Congratulations! " + player.getFirstName() + ", you are the winner!");

@@ -1,15 +1,30 @@
-import java.util.Scanner;
+public class Hosts extends Person {
+    private String gamePhrase;
 
-public class Hosts extends Person{
-    public Hosts(String firstName) {
+    public Hosts(String firstName, String gamePhrase) {
         super(firstName);
-
-        enterGamePhrase();
+        this.gamePhrase = gamePhrase;
     }
 
-    public void enterGamePhrase() {
-        Scanner hostPhrase = new Scanner(System.in);
-        System.out.println("Host, please enter a phrase:");
-        Phrases.gamePhrase = hostPhrase.nextLine();
+    public String getGamePhrase() {
+        return gamePhrase;
+    }
+
+    public void setGamePhrase(String gamePhrase) {
+        this.gamePhrase = gamePhrase;
+    }
+
+    public String getPlayingPhrase() {
+
+        return gamePhrase;
+    }
+
+    public boolean checkGuess(String guess) {
+
+        return gamePhrase.toLowerCase().contains(guess.toLowerCase());
+    }
+
+    public boolean isGameWon() {
+        return false;
     }
 }

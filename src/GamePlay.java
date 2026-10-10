@@ -6,7 +6,7 @@ public class GamePlay {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter a host name:");
         String hostName = scanner.nextLine();
-        Hosts host = new Hosts(hostName);
+        Hosts host = new Hosts(hostName, "");
 
 
         Players[] currentPlayers = new Players[3];
