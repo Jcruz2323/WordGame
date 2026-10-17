@@ -1,8 +1,7 @@
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class GUI extends JFrame {
@@ -12,6 +11,8 @@ public class GUI extends JFrame {
     private JLabel currentHostLabel;
     private JLabel currentPhraseLabel;
     private JMenuBar menuBar;
+    private JTextArea messages;
+    private JCheckBox saveMessages;
 
     public GUI() {
         players = new ArrayList<>();
@@ -20,13 +21,14 @@ public class GUI extends JFrame {
         setTitle("Word Game GUI");
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(4, 1));
+        setLayout(new GridLayout(5, 1));
 
         setupMenuBar();
         setupPlayersPanel();
         setupHostPanel();
         setupPhrasePanel();
         setupStartPanel();
+        setupMessagePanel();
 
         setVisible(true);
     }
@@ -161,11 +163,29 @@ public class GUI extends JFrame {
         startTurnsButton.addActionListener(e -> startTurns());
     }
 
+    private void setupMessagePanel() {
+        JPanel panel = new JPanel();
+        add(panel);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
+        messages = new JTextArea();
+        messages.setRows(5);
+        messages.setEditable(false);
+        panel.add(new JScrollPane(messages));
+
+        saveMessages = new JCheckBox("Save Messages");
+        saveMessages.setToolTipText("If checked, only one message will be displayed at a time, otherwise messages " +
+                "are only cleared once a new game is started.");
+        panel.add(saveMessages);
+    }
+
     private void startTurns() {
         if (players.isEmpty() || host == null) {
-            JOptionPane.showMessageDialog(this, "Add players and set host first!");
+            sendMessage("Add players and set host first!");
             return;
         }
+
+        messages.setText("");
 
         for (Players player : players) {
             String guess = JOptionPane.showInputDialog(this, player.getFirstName() + ", enter your guess:");
@@ -174,24 +194,27 @@ public class GUI extends JFrame {
             boolean correct = host.checkGuess(guess);
             if (correct) {
                 player.setCurrentAmountOfMoney(player.getCurrentAmountOfMoney() + 100);
-                JOptionPane.showMessageDialog(this, "Correct! " + player.getFirstName() +
+                sendMessage("Correct! " + player.getFirstName() +
                         " wins 100 points. Total: $" + player.getCurrentAmountOfMoney());
             } else {
-                JOptionPane.showMessageDialog(this, "Incorrect guess.");
+                sendMessage("Incorrect guess.");
             }
 
             updatePhraseLabel(host.getPlayingPhrase());
 
             if (host.isGameWon()) {
-                int response = JOptionPane.showConfirmDialog(this, player.getFirstName() + " won! Play again?",
-                        "Play Again?", JOptionPane.YES_NO_OPTION);
-                if (response == JOptionPane.NO_OPTION) {
-                    System.exit(0);
-                } else {
-                }
+                sendMessage(player.getFirstName() + " won! Play again?");
                 break;
             }
         }
+    }
+
+    private void sendMessage(final String message) {
+        if (!saveMessages.isSelected()) {
+            messages.setText("");
+        }
+
+        messages.append(message + "\n");
     }
 
     public static void main(String[] args) {
