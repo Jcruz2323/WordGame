@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -6,9 +8,10 @@ import java.util.ArrayList;
 public class GUI extends JFrame {
     private ArrayList<Players> players;
     private Hosts host;
-    private JLabel playersLabel;
-    private JLabel hostLabel;
-    private JLabel phraseLabel;
+    private JLabel currentPlayersLabel;
+    private JLabel currentHostLabel;
+    private JLabel currentPhraseLabel;
+    private JMenuBar menuBar;
 
     public GUI() {
         players = new ArrayList<>();
@@ -17,43 +20,63 @@ public class GUI extends JFrame {
         setTitle("Word Game GUI");
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout());
-        // Label showing players
-        playersLabel = new JLabel("Players: None");
-        add(playersLabel);
+        setLayout(new GridLayout(4, 1));
 
-        // Button to add player
-        JButton addPlayerButton = new JButton("Add Player");
-        add(addPlayerButton);
-        addPlayerButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                addPlayer();
-            }
-        });
-
-        hostLabel = new JLabel("Host: None");
-        add(hostLabel);
-
-        JButton setHostButton = new JButton("Set Host");
-        add(setHostButton);
-        setHostButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setHost();
-            }
-        });
-
-        phraseLabel = new JLabel("Phrase: ");
-        add(phraseLabel);
-
-        JButton startTurnsButton = new JButton("Start Player Turns");
-        add(startTurnsButton);
-        startTurnsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                startTurns();
-            }
-        });
+        setupMenuBar();
+        setupPlayersPanel();
+        setupHostPanel();
+        setupPhrasePanel();
+        setupStartPanel();
 
         setVisible(true);
+    }
+
+    private void setupMenuBar() {
+        // create and register the menu bar
+        menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        // create and add the Game menu, accessible by Alt+G
+        JMenu game = new JMenu("Game");
+        game.setMnemonic(KeyEvent.VK_G);
+        menuBar.add(game);
+
+        // create Add Player menu item
+        JMenuItem addPlayer = new JMenuItem("Add Player");
+        addPlayer.addActionListener(e -> addPlayer());
+        game.add(addPlayer);
+
+        // create Set Host menu item
+        JMenuItem setHost = new JMenuItem("Set Host");
+        setHost.addActionListener(e -> setHost());
+        game.add(setHost);
+
+        JMenu about = new JMenu("About");
+        about.setMnemonic(KeyEvent.VK_A);
+        menuBar.add(about);
+
+        JMenuItem layout = new JMenuItem("Layout");
+        about.add(layout);
+        layout.addActionListener(e -> JOptionPane.showMessageDialog(
+                this,
+                "I used the GridLayout so the content would be displayed in a table like format and be " +
+                        "easier to see the players, host, phrase, and start button clearly."
+        ));
+    }
+
+    private void setupPlayersPanel() {
+        JPanel panel = new JPanel();
+        add(panel);
+        panel.setLayout(new GridLayout(1, 2));
+
+        JLabel playersTitle = new JLabel("Players:");
+        playersTitle.setHorizontalAlignment(SwingConstants.RIGHT);
+        playersTitle.setBorder(new EmptyBorder(0, 0, 0, 20));
+        playersTitle.setFont(playersTitle.getFont().deriveFont(Font.BOLD));
+        panel.add(playersTitle);
+
+        currentPlayersLabel = new JLabel("None");
+        panel.add(currentPlayersLabel);
     }
 
     private void addPlayer() {
@@ -66,16 +89,34 @@ public class GUI extends JFrame {
     }
 
     private void updatePlayersLabel() {
-        StringBuilder sb = new StringBuilder("Players: ");
+        StringBuilder sb = new StringBuilder("<html>");
         if (players.isEmpty()) {
             sb.append("None");
         } else {
             for (Players p : players) {
-                sb.append(p.getFirstName()).append(", ");
+                sb.append("%s ($%,d)".formatted(p.getFirstName(), p.getCurrentAmountOfMoney())).append(", ");
             }
             sb.setLength(sb.length() - 2);
         }
-        playersLabel.setText(sb.toString());
+
+        sb.append("</html>");
+
+        currentPlayersLabel.setText(sb.toString());
+    }
+
+    private void setupHostPanel() {
+        JPanel panel = new JPanel();
+        add(panel);
+        panel.setLayout(new GridLayout(1, 2));
+
+        JLabel hostLabel = new JLabel("Host:");
+        hostLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        hostLabel.setBorder(new EmptyBorder(0, 0, 0, 20));
+        hostLabel.setFont(hostLabel.getFont().deriveFont(Font.BOLD));
+        panel.add(hostLabel);
+
+        currentHostLabel = new JLabel("None");
+        panel.add(currentHostLabel);
     }
 
     private void setHost() {
@@ -87,12 +128,37 @@ public class GUI extends JFrame {
 
         host = new Hosts(hostName.trim(),gamePhrase.trim() );
 
-        hostLabel.setText("Host: " + host.getFirstName());
+        currentHostLabel.setText(host.getFirstName());
         updatePhraseLabel(host.getPlayingPhrase());
     }
 
+    private void setupPhrasePanel() {
+        JPanel panel = new JPanel();
+        add(panel);
+        panel.setLayout(new GridLayout(1, 2));
+
+        JLabel phraseLabel = new JLabel("Phrase:");
+        phraseLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        phraseLabel.setBorder(new EmptyBorder(0, 0, 0, 20));
+        phraseLabel.setFont(phraseLabel.getFont().deriveFont(Font.BOLD));
+        panel.add(phraseLabel);
+
+        currentPhraseLabel = new JLabel("None");
+        panel.add(currentPhraseLabel);
+    }
+
     private void updatePhraseLabel(String playingPhrase) {
-        phraseLabel.setText("Phrase: " + playingPhrase);
+        currentPhraseLabel.setText(playingPhrase);
+    }
+
+    private void setupStartPanel() {
+        JPanel panel = new JPanel();
+        add(panel);
+
+        JButton startTurnsButton = new JButton("Start Player Turns");
+        startTurnsButton.setPreferredSize(new Dimension(400, 50));
+        panel.add(startTurnsButton);
+        startTurnsButton.addActionListener(e -> startTurns());
     }
 
     private void startTurns() {
